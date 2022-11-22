@@ -1,11 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from "react";
+import logo from "./logo.svg";
 
+const users = ["SecondBite", "Axil Coffee Roasters", "Myer", "Regular"];
 
 function App() {
+  const [user, setUser] = useState<string | null>(null);
   return (
     <div className="App">
-      <h1>Hello world</h1>
+      <p>Pick a User</p>
+      {users.map((u) => (
+        <button
+          onClick={() => {
+            setUser(u);
+          }}
+        >
+          {u}
+        </button>
+      ))}
+      {user}
     </div>
   );
 }
