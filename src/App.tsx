@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cart from "./Cart";
 import logo from "./logo.svg";
 
 const users = ["SecondBite", "Axil Coffee Roasters", "Myer", "Regular"];
@@ -17,7 +18,13 @@ function App() {
           {u}
         </button>
       ))}
-      {user}
+
+      {user && (
+        <>
+          <p>Logged in as {user}</p>
+          <Cart />
+        </>
+      )}
     </div>
   );
 }
