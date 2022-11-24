@@ -18,16 +18,18 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
   const [ads, setAds] = useState(defaultAds);
 
   useEffect(() => {
-    const updatedAds = ads.map((ad) => {
-      const rule = pricingRules.find(
-        (pr) => pr.discountType === "single" && pr.adId === ad.id
-      );
-      if (rule) {
-        return { ...ad, price: rule.discountValue };
-      }
-      return ad;
-    });
-    setAds(updatedAds);
+    if (pricingRules.length > 0) {
+      const updatedAds = ads.map((ad) => {
+        const rule = pricingRules.find(
+          (pr) => pr.discountType === "single" && pr.adId === ad.id
+        );
+        if (rule && rule.discountType === "single") {
+          return { ...ad, price: rule.discountValue };
+        }
+        return ad;
+      });
+      setAds(updatedAds);
+    }
   }, []);
 
   const addToCart = (id: number) => {

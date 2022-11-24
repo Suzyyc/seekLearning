@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import Cart from "./Cart";
 import logo from "./logo.svg";
 
-export type PricingRule = {
-  discountType: "single";
-  discountValue: number;
-  adId: number;
-};
+export type PricingRule =
+  | {
+      discountType: "single";
+      discountValue: number;
+      adId: number;
+    }
+  | { discountType: "bulk"; minQty: number; discountQty: number; adId: number };
 
 type User = {
   name: string;
@@ -49,7 +51,10 @@ const users: User[] = [
     name: "Axil Coffee Roasters",
     pricingRules: [{ discountType: "single", discountValue: 299.99, adId: 2 }],
   },
-  { name: "Myer", pricingRules: [] },
+  {
+    name: "Myer",
+    pricingRules: [{ discountType: "single", discountValue: 389.99, adId: 3 }],
+  },
   { name: "Regular", pricingRules: [] },
 ];
 
