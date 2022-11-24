@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Ad } from "./App";
+import React, { useEffect, useState } from "react";
+import { Ad, PricingRule } from "./App";
 
 const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
 
@@ -10,11 +10,25 @@ type CartItem = {
 
 type Props = {
   defaultAds: Ad[];
+  pricingRules: PricingRule[];
 };
 
-const Cart: React.FC<Props> = ({ defaultAds }) => {
+const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [ads, setAds] = useState(defaultAds);
+
+  useEffect(() => {
+    const updatedAds = ads.map((ad) => {
+      const rule = pricingRules.find(
+        (pr) => pr.discountType === "single" && pr.adId === ad.id
+      );
+      if (rule) {
+        return { ...ad, price: rule.discountValue };
+      }
+      return ad;
+    });
+    setAds(updatedAds);
+  }, []);
 
   const addToCart = (id: number) => {
     const cartItem = cartItems.find((item) => id === item.id) || { id, qty: 0 };

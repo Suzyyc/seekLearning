@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Cart from "./Cart";
 import logo from "./logo.svg";
 
-type PricingRule = {
-  discountType: "each";
+export type PricingRule = {
+  discountType: "single";
   discountValue: number;
   adId: number;
 };
@@ -47,20 +47,20 @@ const users: User[] = [
   { name: "SecondBite", pricingRules: [] },
   {
     name: "Axil Coffee Roasters",
-    pricingRules: [{ discountType: "each", discountValue: 299.99, adId: 2 }],
+    pricingRules: [{ discountType: "single", discountValue: 299.99, adId: 2 }],
   },
   { name: "Myer", pricingRules: [] },
   { name: "Regular", pricingRules: [] },
 ];
 
 function App() {
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   return (
     <div className="App">
       {user ? (
         <>
-          <p>Logged in as {user}</p>
-          <Cart defaultAds={defaultAds} />
+          <p>Logged in as {user.name}</p>
+          <Cart defaultAds={defaultAds} pricingRules={user.pricingRules} />
         </>
       ) : (
         <>
@@ -68,7 +68,7 @@ function App() {
           {users.map((u) => (
             <button
               onClick={() => {
-                setUser(u.name);
+                setUser(u);
               }}
             >
               {u.name}
