@@ -79,8 +79,6 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
     setCartItems([...otherCartItems, cartItem]);
   };
 
-  console.log(cartItems);
-
   const clearCart = () => {
     setCartItems([]);
   };
