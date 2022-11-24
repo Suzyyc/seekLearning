@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Ad, PricingRule } from "./App";
 
-const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
+export const getAdById = (id: number, ads: Ad[]) =>
+  ads.find((ad) => ad.id === id);
 
-const applySingleAdDiscounts = (ads: Ad[], pricingRules: PricingRule[]) =>
+export const applySingleAdDiscounts = (
+  ads: Ad[],
+  pricingRules: PricingRule[]
+) =>
   ads.map((ad) => {
     const rule = pricingRules.find(
       (pr) => pr.discountType === "single" && pr.adId === ad.id
@@ -14,7 +18,7 @@ const applySingleAdDiscounts = (ads: Ad[], pricingRules: PricingRule[]) =>
     return ad;
   });
 
-const calcCartTotal = (
+export const calcCartTotal = (
   cartItems: CartItem[],
   ads: Ad[],
   pricingRules: PricingRule[]
@@ -40,10 +44,10 @@ const calcCartTotal = (
     return ad ? ad.price * quantity + sum : sum;
   }, 0);
 
-  return total.toFixed(2);
+  return parseFloat(total.toFixed(2));
 };
 
-type CartItem = {
+export type CartItem = {
   adId: number;
   qty: number;
 };

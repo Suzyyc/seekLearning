@@ -22,7 +22,7 @@ export type Ad = {
   price: number;
 };
 
-const defaultAds: Ad[] = [
+export const defaultAds: Ad[] = [
   {
     id: 1,
     name: "Classic Ad",
