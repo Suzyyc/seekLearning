@@ -1,34 +1,5 @@
 import React, { useState } from "react";
-
-type Ad = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-};
-
-const defaultAds = [
-  {
-    id: 1,
-    name: "Classic Ad",
-    description: "Offers the most basic level of advertisement",
-    price: 269.99,
-  },
-  {
-    id: 2,
-    name: "Stand out Ad",
-    description:
-      "Allows advertisers to use a company logo and use a longer presentation text",
-    price: 322.99,
-  },
-  {
-    id: 3,
-    name: "Premium Ad",
-    description:
-      "Same benefits as Standout Ad, but also puts the advertisement at the top of the results, allowing higher visibility",
-    price: 394.99,
-  },
-];
+import { Ad } from "./App";
 
 const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
 
@@ -37,7 +8,11 @@ type CartItem = {
   qty: number;
 };
 
-const Cart = () => {
+type Props = {
+  defaultAds: Ad[];
+};
+
+const Cart: React.FC<Props> = ({ defaultAds }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [ads, setAds] = useState(defaultAds);
 
@@ -66,7 +41,7 @@ const Cart = () => {
   return (
     <div>
       <ul>
-        {defaultAds.map((ad) => (
+        {ads.map((ad) => (
           <li>
             {ad.name} ${ad.price}
             <button onClick={() => addToCart(ad.id)}>+</button>
