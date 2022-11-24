@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-const ads = [
+type Ad = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+};
+
+const defaultAds = [
   {
     id: 1,
     name: "Classic Ad",
@@ -23,7 +30,7 @@ const ads = [
   },
 ];
 
-const getAd = (id: number) => ads.find((ad) => ad.id === id);
+const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
 
 type CartItem = {
   id: number;
@@ -32,6 +39,7 @@ type CartItem = {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [ads, setAds] = useState(defaultAds);
 
   const addToCart = (id: number) => {
     const cartItem = cartItems.find((item) => id === item.id) || { id, qty: 0 };
@@ -45,7 +53,7 @@ const Cart = () => {
 
   const calcCartTotal = () => {
     const total = cartItems.reduce((sum, item) => {
-      const ad = getAd(item.id);
+      const ad = getAdById(item.id, ads);
       return ad ? ad.price * item.qty + sum : sum;
     }, 0);
     return total.toFixed(2);
@@ -58,7 +66,7 @@ const Cart = () => {
   return (
     <div>
       <ul>
-        {ads.map((ad) => (
+        {defaultAds.map((ad) => (
           <li>
             {ad.name} ${ad.price}
             <button onClick={() => addToCart(ad.id)}>+</button>
@@ -67,7 +75,7 @@ const Cart = () => {
       </ul>
       {cartItems.map((item) => (
         <>
-          <p>{getAd(item.id)?.name}</p>
+          <p>{getAdById(item.id, ads)?.name}</p>
           <p>qty: {item.qty}</p>
         </>
       ))}
