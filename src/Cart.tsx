@@ -4,7 +4,7 @@ import { Ad, PricingRule } from "./App";
 const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
 
 type CartItem = {
-  id: number;
+  adId: number;
   qty: number;
 };
 
@@ -33,9 +33,12 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
   }, []);
 
   const addToCart = (id: number) => {
-    const cartItem = cartItems.find((item) => id === item.id) || { id, qty: 0 };
+    const cartItem = cartItems.find((item) => id === item.adId) || {
+      adId: id,
+      qty: 0,
+    };
     cartItem.qty++;
-    const otherCartItems = cartItems.filter((item) => id !== item.id);
+    const otherCartItems = cartItems.filter((item) => id !== item.adId);
     // this wont preserve order, need to slice with index
     setCartItems([...otherCartItems, cartItem]);
   };
@@ -44,9 +47,28 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
 
   const calcCartTotal = () => {
     const total = cartItems.reduce((sum, item) => {
-      const ad = getAdById(item.id, ads);
-      return ad ? ad.price * item.qty + sum : sum;
+      const ad = getAdById(item.adId, ads);
+      let quantity = item.qty;
+
+      if (pricingRules.length > 0) {
+        const pricingRule = pricingRules.find(
+          (rule) => rule.adId === item.adId
+        );
+
+        if (
+          pricingRule &&
+          pricingRule.discountType === "bulk" &&
+          item.qty >= pricingRule.minQty
+        ) {
+          const leftoverQty = item.qty % pricingRule.minQty;
+          const dealCount = Math.floor(item.qty / pricingRule.minQty);
+          quantity = leftoverQty + dealCount * pricingRule.dealQty;
+        }
+      }
+
+      return ad ? ad.price * quantity + sum : sum;
     }, 0);
+
     return total.toFixed(2);
   };
 
@@ -66,7 +88,7 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
       </ul>
       {cartItems.map((item) => (
         <>
-          <p>{getAdById(item.id, ads)?.name}</p>
+          <p>{getAdById(item.adId, ads)?.name}</p>
           <p>qty: {item.qty}</p>
         </>
       ))}

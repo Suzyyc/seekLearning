@@ -8,7 +8,7 @@ export type PricingRule =
       discountValue: number;
       adId: number;
     }
-  | { discountType: "bulk"; minQty: number; discountQty: number; adId: number };
+  | { discountType: "bulk"; minQty: number; dealQty: number; adId: number };
 
 type User = {
   name: string;
@@ -46,14 +46,20 @@ const defaultAds: Ad[] = [
 ];
 
 const users: User[] = [
-  { name: "SecondBite", pricingRules: [] },
+  {
+    name: "SecondBite",
+    pricingRules: [{ discountType: "bulk", minQty: 3, dealQty: 2, adId: 1 }],
+  },
   {
     name: "Axil Coffee Roasters",
     pricingRules: [{ discountType: "single", discountValue: 299.99, adId: 2 }],
   },
   {
     name: "Myer",
-    pricingRules: [{ discountType: "single", discountValue: 389.99, adId: 3 }],
+    pricingRules: [
+      { discountType: "single", discountValue: 389.99, adId: 3 },
+      { discountType: "bulk", minQty: 5, dealQty: 4, adId: 2 },
+    ],
   },
   { name: "Regular", pricingRules: [] },
 ];
