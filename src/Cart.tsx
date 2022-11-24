@@ -3,6 +3,46 @@ import { Ad, PricingRule } from "./App";
 
 const getAdById = (id: number, ads: Ad[]) => ads.find((ad) => ad.id === id);
 
+const applySingleAdDiscounts = (ads: Ad[], pricingRules: PricingRule[]) =>
+  ads.map((ad) => {
+    const rule = pricingRules.find(
+      (pr) => pr.discountType === "single" && pr.adId === ad.id
+    );
+    if (rule && rule.discountType === "single") {
+      return { ...ad, price: rule.discountValue };
+    }
+    return ad;
+  });
+
+const calcCartTotal = (
+  cartItems: CartItem[],
+  ads: Ad[],
+  pricingRules: PricingRule[]
+) => {
+  const total = cartItems.reduce((sum, item) => {
+    const ad = getAdById(item.adId, ads);
+    let quantity = item.qty;
+
+    if (pricingRules.length > 0) {
+      const pricingRule = pricingRules.find((rule) => rule.adId === item.adId);
+
+      if (
+        pricingRule &&
+        pricingRule.discountType === "bulk" &&
+        item.qty >= pricingRule.minQty
+      ) {
+        const leftoverQty = item.qty % pricingRule.minQty;
+        const dealCount = Math.floor(item.qty / pricingRule.minQty);
+        quantity = leftoverQty + dealCount * pricingRule.dealQty;
+      }
+    }
+
+    return ad ? ad.price * quantity + sum : sum;
+  }, 0);
+
+  return total.toFixed(2);
+};
+
 type CartItem = {
   adId: number;
   qty: number;
@@ -19,15 +59,7 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
 
   useEffect(() => {
     if (pricingRules.length > 0) {
-      const updatedAds = ads.map((ad) => {
-        const rule = pricingRules.find(
-          (pr) => pr.discountType === "single" && pr.adId === ad.id
-        );
-        if (rule && rule.discountType === "single") {
-          return { ...ad, price: rule.discountValue };
-        }
-        return ad;
-      });
+      const updatedAds = applySingleAdDiscounts(ads, pricingRules);
       setAds(updatedAds);
     }
   }, []);
@@ -44,33 +76,6 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
   };
 
   console.log(cartItems);
-
-  const calcCartTotal = () => {
-    const total = cartItems.reduce((sum, item) => {
-      const ad = getAdById(item.adId, ads);
-      let quantity = item.qty;
-
-      if (pricingRules.length > 0) {
-        const pricingRule = pricingRules.find(
-          (rule) => rule.adId === item.adId
-        );
-
-        if (
-          pricingRule &&
-          pricingRule.discountType === "bulk" &&
-          item.qty >= pricingRule.minQty
-        ) {
-          const leftoverQty = item.qty % pricingRule.minQty;
-          const dealCount = Math.floor(item.qty / pricingRule.minQty);
-          quantity = leftoverQty + dealCount * pricingRule.dealQty;
-        }
-      }
-
-      return ad ? ad.price * quantity + sum : sum;
-    }, 0);
-
-    return total.toFixed(2);
-  };
 
   const clearCart = () => {
     setCartItems([]);
@@ -92,7 +97,7 @@ const Cart: React.FC<Props> = ({ defaultAds, pricingRules }) => {
           <p>qty: {item.qty}</p>
         </>
       ))}
-      <p>Total ${calcCartTotal()}</p>
+      <p>Total ${calcCartTotal(cartItems, ads, pricingRules)}</p>
       <button onClick={clearCart}>Clear cart</button>
     </div>
   );
