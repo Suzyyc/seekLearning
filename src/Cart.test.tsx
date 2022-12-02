@@ -32,3 +32,12 @@ test("calculate total cart without price rules", () => {
   const total = calcCartTotal(cartItems, defaultAds, []);
   expect(total).toEqual(1579.96);
 });
+
+test("apply bulk discount", () => {
+  const pricingRules: PricingRule[] = [
+    { discountType: "bulk", minQty: 5, dealQty: 4, adId: 2 },
+  ];
+  const cartItems: CartItem[] = [{ adId: 2, qty: 6 }];
+  const total = calcCartTotal(cartItems, defaultAds, pricingRules);
+  expect(total).toEqual(1614.95);
+});

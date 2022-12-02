@@ -8,7 +8,13 @@ export type PricingRule =
       discountValue: number;
       adId: number;
     }
-  | { discountType: "bulk"; minQty: number; dealQty: number; adId: number };
+  | { discountType: "bulk"; minQty: number; dealQty: number; adId: number }
+  | {
+      discountType: "minQtyPrice";
+      minQty: number;
+      discountValue: number;
+      adId: number;
+    };
 
 type User = {
   name: string;
@@ -59,6 +65,23 @@ const users: User[] = [
     pricingRules: [
       { discountType: "single", discountValue: 389.99, adId: 3 },
       { discountType: "bulk", minQty: 5, dealQty: 4, adId: 2 },
+      {
+        discountType: "minQtyPrice",
+        minQty: 3,
+        discountValue: 249.99,
+        adId: 1,
+      },
+    ],
+  },
+  {
+    name: "Jora",
+    pricingRules: [
+      {
+        discountType: "minQtyPrice",
+        minQty: 4,
+        discountValue: 379.99,
+        adId: 3,
+      },
     ],
   },
   { name: "Regular", pricingRules: [] },

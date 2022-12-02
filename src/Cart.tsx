@@ -18,6 +18,17 @@ export const applySingleAdDiscounts = (
     return ad;
   });
 
+// const applyMinQtyPrice = (ads: Ad[], pricingRules: PricingRule[]) =>
+//   ads.map((ad) => {
+//     const rule = pricingRules.find(
+//       (pr) => pr.discountType === "minQtyPrice" && pr.adId === ad.id
+//     );
+//     if (rule && rule.discountType === "minQtyPrice") {
+//       return { ...ad, price: rule.discountValue };
+//     }
+//     return ad
+//   })
+
 export const calcCartTotal = (
   cartItems: CartItem[],
   ads: Ad[],
@@ -38,6 +49,15 @@ export const calcCartTotal = (
         const leftoverQty = item.qty % pricingRule.minQty;
         const dealCount = Math.floor(item.qty / pricingRule.minQty);
         quantity = leftoverQty + dealCount * pricingRule.dealQty;
+      }
+      if (
+        ad &&
+        pricingRule &&
+        pricingRule.discountType === "minQtyPrice" &&
+        item.qty >= pricingRule.minQty
+      ) {
+        // min qty 4 >= then the price should drop to the discount value
+        ad.price = pricingRule.discountValue;
       }
     }
 
