@@ -18,17 +18,6 @@ export const applySingleAdDiscounts = (
     return ad;
   });
 
-// const applyMinQtyPrice = (ads: Ad[], pricingRules: PricingRule[]) =>
-//   ads.map((ad) => {
-//     const rule = pricingRules.find(
-//       (pr) => pr.discountType === "minQtyPrice" && pr.adId === ad.id
-//     );
-//     if (rule && rule.discountType === "minQtyPrice") {
-//       return { ...ad, price: rule.discountValue };
-//     }
-//     return ad
-//   })
-
 export const calcCartTotal = (
   cartItems: CartItem[],
   ads: Ad[],
